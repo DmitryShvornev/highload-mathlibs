@@ -4,7 +4,7 @@
 #include <iostream>
 #include <conio.h>
 #include <math.h>
-const int n = 3;
+const int n = 6;
 const int N = 10000;
 
 using namespace std;
@@ -16,8 +16,8 @@ double f(double x)
 
 double Gauss(double a, double b)
 {
-    const double Xi[n] = { -0.7745967,0,0.7745967 };
-    const double Ci[n] = { 0.5555556,0.8888889,0.5555556 };
+    const double Xi[n] = { -0.9324700, -0.6612094, -0.2386142, 0.2386142, 0.6612094, 0.9324700 };
+    const double Ci[n] = { 0.1713245, 0.3607616, 0.4679140, 0.4679140, 0.3607616, 0.1713245 };
 
     double ra = (b - a) / 2;
     double su = (a + b) / 2;
@@ -32,8 +32,8 @@ double Gauss(double a, double b)
 
 int main()
 {
-    double a = 0.0;
-    double b = 10000.0;
+    double a = 2.0;
+    double b = 10.0;
     double s = 0.0;
     for (int i = 0; i < N; ++i)
     {
