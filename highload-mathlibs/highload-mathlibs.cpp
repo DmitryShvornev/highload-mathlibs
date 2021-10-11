@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <iomanip>
 #include <conio.h>
 #include <math.h>
 const int n = 6;
@@ -96,7 +97,9 @@ void orthogonalization() {
 	// вывод на печать значений скалярных произведений - функции высокой степени уже не ортогональны...
 	// надо бы сделать адекватный вывод
 	for (int i = 0; i < N_ort; ++i) {
-		cout << "scalar_prod for f_" <<i<< " : ";
+		cout << "scalar_prod for f_" << i << " : ";
+		cout << fixed;
+		cout.precision(5);
 		for(int j = i; j< N_ort; ++j)
 			cout << scalar_prod(i, j)<< " ";
 		cout << endl;
@@ -110,6 +113,19 @@ void orthogonalization() {
 	delete[] ort_func;
 }
 
+void print_matrix(double** mat, int n) {
+	for (int i = 0; i < n; i++)
+	{
+		cout << "row" << " " << i << ":";
+		for (int j = 100; j < 2 * n; j++)
+		{
+			cout << setw(2) << mat[i][j] << " ";
+		}
+		cout << endl;
+		cout << endl;
+	}
+}
+
 // вычисление обратной матрицы методом гаусса
 
 void matrix_inverse_by_gauss() {
@@ -117,36 +133,64 @@ void matrix_inverse_by_gauss() {
 	double coeff;
 
 	double **A_matr = new double *[N_inv];
-	for (int i = 0; i < N_inv; ++i)
+	double** A_matr_copy = new double* [N_inv];
+	double** E = new double* [N_inv];
+	for (int i = 0; i < N_inv; ++i) {
 		A_matr[i] = new double[2 * N_inv];
+		A_matr_copy[i] = new double[N_inv];
+		E[i] = new double[N_inv];
+	}
+		
 	for (int i = 0; i < N_inv; ++i)
 		for (int j = 0; j < N_inv; ++j) {
 			A_matr[i][j] = pow(double(i) / 100, j);
-			if(i == j)
-				A_matr[i][N_inv+j] = 1;
-			else
+			A_matr_copy[i][j] = pow(double(i) / 100, j);
+			if (i == j) {
+				A_matr[i][N_inv + j] = 1;
+			}
+			else {
 				A_matr[i][N_inv + j] = 0;
+			}
 		}
 	// вычисление обратной матрицы
 	for (int i = 0; i < N_inv; ++i) {
 		coeff = A_matr[i][i];
-		for (int j = 0; j < 2*N_inv; ++j) 
-			A_matr[i][j] = A_matr[i][j]/ coeff;
+		for (int j = 0; j < 2 * N_inv; ++j) {
+			A_matr[i][j] = A_matr[i][j] / coeff;
+		}
 		for (int j = 0; j < N_inv; ++j) {
 			if (i != j) {
 				coeff = A_matr[j][i];
-				for (int k = 0; k < 2 * N_inv; ++k)
+				for (int k = 0; k < 2 * N_inv; ++k) {
 					A_matr[j][k] -= coeff * A_matr[i][k];
+				}	
 			}
 		}
 	}
-	// печать обратной матрицы
+
 	// проверка-перемножение с исходной - оценка влияния погрешностей.
+	for (int i = 0; i < N_inv; i++)
+	{
+		for (int j = 0; j < N_inv; j++)
+		{
+			for (int k = 0; k < N_inv; k++)
+			{
+				E[i][j] += A_matr[i][k + N_inv] * A_matr_copy[k][j];
+			}
+		}
+
+	}
+
+	print_matrix(E, N_inv);
 
 	for (int i = 0; i < N_inv; ++i) {
 		delete[] A_matr[i];
+		delete[] A_matr_copy[i];
+		delete[] E[i];
 	}
 	delete[] A_matr;
+	delete[] A_matr_copy;
+	delete[] E;
 }
 
 
